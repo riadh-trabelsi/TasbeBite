@@ -9,15 +9,17 @@ export class UsersService {
 
   }
  async  create(createUserDto: CreateUserDto) {
-  const {password , ...rest} = createUserDto
+  const {passwordDto , ...rest} = createUserDto
   const salt = await bcrypt.genSalt()
-  const hashedPassword = await bcrypt.hash(password,salt)
-    return await this.prisma.user.create({
+  const hashedPassword = await bcrypt.hash(passwordDto,salt)
+   const user =  await this.prisma.user.create({
       data : {
         password : hashedPassword,
         ...rest
-      }
+      }                                                
     })
+    const {password, ...info} = user
+    return info
   }
 
 async   findAll() {
